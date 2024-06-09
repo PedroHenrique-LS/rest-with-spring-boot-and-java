@@ -20,37 +20,39 @@ import br.com.pedro.servicies.PersonServices;
 @RestController
 @RequestMapping("/person")
 public class PersonController {
-	
+
 	@Autowired
 	private PersonServices services;
-	
-	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public PersonVO findById(@PathVariable(value = "id") Long id) throws Exception{
-		
+
+	@GetMapping(value = "/{id}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public PersonVO findById(@PathVariable(value = "id") Long id) throws Exception {
+
 		return services.findById(id);
 	}
-	
-	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<PersonVO> findAll(){
+
+	@GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public List<PersonVO> findAll() {
 		return services.findAll();
 	}
-	
-	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public PersonVO create(@RequestBody PersonVO person) throws Exception{
-		
+
+	@PostMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, consumes = {
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public PersonVO create(@RequestBody PersonVO person) throws Exception {
+
 		return services.create(person);
 	}
-	
-	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+
+	@PutMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, consumes = {
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public PersonVO update(@RequestBody PersonVO person) {
-		
+
 		return services.update(person);
-		
+
 	}
-	
+
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
-		
+
 		services.delete(id);
 		return ResponseEntity.noContent().build();
 	}
