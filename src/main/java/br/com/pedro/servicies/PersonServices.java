@@ -1,11 +1,14 @@
 package br.com.pedro.servicies;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import br.com.pedro.controllers.PersonController;
 import br.com.pedro.data.vo.v1.PersonVO;
 import br.com.pedro.excptions.ResourceNotFoundException;
 import br.com.pedro.mapper.DozerMapper;
@@ -22,11 +25,23 @@ public class PersonServices {
 		
 		Person entity = personRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
 		
-		return DozerMapper.parseObject(entity, PersonVO.class);
+		PersonVO vo = DozerMapper.parseObject(entity, PersonVO.class);
+		vo.add(linkTo(methodOn(PersonController.class).findAll()).withSelfRel());
+		return vo;
 	}
 	
 	public List<PersonVO> findAll() {
-		return DozerMapper.parseListObjects(personRepository.findAll(), PersonVO.class);
+		List<PersonVO> people = DozerMapper.parseListObjects(personRepository.findAll(), PersonVO.class);
+		people.stream().forEach(person -> {
+			try {
+				person.add(linkTo(methodOn(PersonController.class).findById(person.getKey())).withSelfRel());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		});
+		
+		return people;
 		
 	}
 	
@@ -40,7 +55,7 @@ public class PersonServices {
 	
 	public PersonVO update(PersonVO person) {
 		
-		Person entity = personRepository.findById(person.getId()).orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
+		Person entity = personRepository.findById(person.getKey()).orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
 		
 		entity.setFirstName(person.getFirstName());
 		entity.setLastName(person.getLastName());
