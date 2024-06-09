@@ -21,12 +21,12 @@ public class PersonServices {
 	@Autowired
 	PersonRepository personRepository;
 	
-	public PersonVO findById(Long id) {
+	public PersonVO findById(Long id) throws Exception {
 		
 		Person entity = personRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
 		
 		PersonVO vo = DozerMapper.parseObject(entity, PersonVO.class);
-		vo.add(linkTo(methodOn(PersonController.class).findAll()).withSelfRel());
+		vo.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel());
 		return vo;
 	}
 	
@@ -47,13 +47,20 @@ public class PersonServices {
 	
 	public PersonVO create(PersonVO person) {
 		
-		Person entity = DozerMapper.parseObject(person, Person.class);
+		var entity = DozerMapper.parseObject(person, Person.class);
 		
-		return DozerMapper.parseObject(personRepository.save(entity), PersonVO.class);
+		var vo = DozerMapper.parseObject(personRepository.save(entity), PersonVO.class);
+		try {
+			vo.add(linkTo(methodOn(PersonController.class).findById(vo.getKey())).withSelfRel());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return vo;
 		
 	}
 	
-	public PersonVO update(PersonVO person) {
+	public PersonVO update(PersonVO person)  {
 		
 		Person entity = personRepository.findById(person.getKey()).orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
 		
@@ -62,7 +69,14 @@ public class PersonServices {
 		entity.setAddress(person.getAddress());
 		entity.setGender(person.getGender());
 		
-		return DozerMapper.parseObject(personRepository.save(entity), PersonVO.class);
+		var vo = DozerMapper.parseObject(personRepository.save(entity), PersonVO.class);
+		try {
+			vo.add(linkTo(methodOn(PersonController.class).findById(vo.getKey())).withSelfRel());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return vo;
 		
 	}
 	
