@@ -21,12 +21,17 @@ public class PersonServices {
 	@Autowired
 	PersonRepository personRepository;
 	
-	public PersonVO findById(Long id) throws Exception {
+	public PersonVO findById(Long id) {
 		
 		Person entity = personRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
 		
 		PersonVO vo = DozerMapper.parseObject(entity, PersonVO.class);
-		vo.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel());
+		try {
+			vo.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return vo;
 	}
 	
