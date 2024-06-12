@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import br.com.pedro.data.vo.v1.PersonVO;
 import br.com.pedro.model.Person;
 import br.com.pedro.repositories.PersonRepository;
 import br.com.pedro.servicies.PersonServices;
@@ -40,19 +41,21 @@ class PersonServicesTest {
 
 	@Test
 	void testFindById() {
-		Person person = input.mockEntity(1);
-		person.setId(1L);
-		when(repository.findById(1L)).thenReturn(Optional.of(person));
-		var resulte = services.findById(1L);
-		assertNotNull(resulte);
-		assertNotNull(resulte.getKey());
-		assertNotNull(resulte.getLinks());
-		System.out.println(resulte.toString());
-		assertTrue(resulte.toString().contains("links: [</person/1>;rel=\"self\"]"));
-		assertEquals("Addres Test1", resulte.getAddress());
-		assertEquals("First Name Test1", resulte.getFirstName());
-		assertEquals("Last Name Test1", resulte.getLastName());
-		assertEquals("Female", resulte.getGender());
+		Person entity = input.mockEntity(1); 
+		entity.setId(1L);
+		
+		when(repository.findById(1L)).thenReturn(Optional.of(entity));
+		
+		var result = services.findById(1L);
+		assertNotNull(result);
+		assertNotNull(result.getKey());
+		assertNotNull(result.getLinks());
+		
+		assertTrue(result.toString().contains("links: [</api/person/v1/1>;rel=\"self\"]"));
+		assertEquals("Addres Test1", result.getAddress());
+		assertEquals("First Name Test1", result.getFirstName());
+		assertEquals("Last Name Test1", result.getLastName());
+		assertEquals("Female", result.getGender());
 	}
 
 	@Test
@@ -62,17 +65,64 @@ class PersonServicesTest {
 
 	@Test
 	void testCreate() {
-		fail("Not yet implemented");
+		Person entity = input.mockEntity(1); 
+		entity.setId(1L);
+		
+		Person persisted = entity;
+		persisted.setId(1L);
+		
+		PersonVO vo = input.mockVO(1);
+		vo.setKey(1L);
+		
+		when(repository.save(entity)).thenReturn(persisted);
+		
+		var result = services.create(vo);
+		
+		assertNotNull(result);
+		assertNotNull(result.getKey());
+		assertNotNull(result.getLinks());
+		
+		assertTrue(result.toString().contains("links: [</api/person/v1/1>;rel=\"self\"]"));
+		assertEquals("Addres Test1", result.getAddress());
+		assertEquals("First Name Test1", result.getFirstName());
+		assertEquals("Last Name Test1", result.getLastName());
+		assertEquals("Female", result.getGender());
 	}
 
 	@Test
 	void testUpdate() {
-		fail("Not yet implemented");
+		Person entity = input.mockEntity(1); 
+		entity.setId(1L);
+		
+		Person persisted = entity;
+		persisted.setId(1L);
+		
+		PersonVO vo = input.mockVO(1);
+		vo.setKey(1L);
+		when(repository.findById(1L)).thenReturn(Optional.of(entity));
+		when(repository.save(entity)).thenReturn(persisted);
+		
+		var result = services.update(vo);
+		
+		assertNotNull(result);
+		assertNotNull(result.getKey());
+		assertNotNull(result.getLinks());
+		
+		assertTrue(result.toString().contains("links: [</api/person/v1/1>;rel=\"self\"]"));
+		assertEquals("Addres Test1", result.getAddress());
+		assertEquals("First Name Test1", result.getFirstName());
+		assertEquals("Last Name Test1", result.getLastName());
+		assertEquals("Female", result.getGender());
 	}
 
 	@Test
 	void testDelete() {
-		fail("Not yet implemented");
+		Person entity = input.mockEntity(1); 
+		entity.setId(1L);
+		
+		when(repository.findById(1L)).thenReturn(Optional.of(entity));
+		
+		var result = services.findById(1L);
 	}
 
 }
