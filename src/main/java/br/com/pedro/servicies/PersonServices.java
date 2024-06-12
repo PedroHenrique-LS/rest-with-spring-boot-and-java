@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.pedro.controllers.PersonController;
 import br.com.pedro.data.vo.v1.PersonVO;
+import br.com.pedro.excptions.RequiredObjectIsNullException;
 import br.com.pedro.excptions.ResourceNotFoundException;
 import br.com.pedro.mapper.DozerMapper;
 import br.com.pedro.model.Person;
@@ -43,6 +44,7 @@ public class PersonServices {
 
 	public PersonVO create(PersonVO person) {
 
+		if(person == null) throw new RequiredObjectIsNullException();
 		var entity = DozerMapper.parseObject(person, Person.class);
 		var vo = DozerMapper.parseObject(personRepository.save(entity), PersonVO.class);
 		vo.add(linkTo(methodOn(PersonController.class).findById(vo.getKey())).withSelfRel());
@@ -51,6 +53,8 @@ public class PersonServices {
 	}
 
 	public PersonVO update(PersonVO person) {
+		
+		if(person == null) throw new RequiredObjectIsNullException();
 
 		Person entity = personRepository.findById(person.getKey())
 				.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
