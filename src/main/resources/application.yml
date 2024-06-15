@@ -10,4 +10,8 @@ spring:
       ddl-auto: none
     properties:
       show-sql: false
+springdoc:
+  pathsToMatch: /**/**
+  swagger-ui:
+    use-root-path: true
     
