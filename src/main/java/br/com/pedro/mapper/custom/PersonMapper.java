@@ -1,7 +1,5 @@
 package br.com.pedro.mapper.custom;
 
-import java.util.Date;
-
 import org.springframework.stereotype.Service;
 
 import br.com.pedro.data.vo.v1.PersonVO;

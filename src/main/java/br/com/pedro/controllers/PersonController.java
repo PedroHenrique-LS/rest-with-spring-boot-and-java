@@ -88,7 +88,7 @@ public class PersonController {
 		}
 	)
 	public PersonVO create(@RequestBody PersonVO person) throws Exception {
-
+		
 		return services.create(person);
 	}
 
