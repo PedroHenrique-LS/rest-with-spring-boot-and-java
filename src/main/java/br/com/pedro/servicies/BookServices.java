@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import br.com.pedro.controllers.BookController;
 import br.com.pedro.data.vo.v1.BookVO;
+import br.com.pedro.excptions.RequiredObjectIsNullException;
+import br.com.pedro.excptions.ResourceNotFoundException;
 import br.com.pedro.mapper.custom.BookMapper;
 import br.com.pedro.repositories.BookRepository;
 
@@ -31,7 +33,7 @@ public class BookServices {
 	}
 	
 	public BookVO findById(Long id) {
-		var vo = BookMapper.convertEntityToVo(repository.findById(id).get());
+		var vo = BookMapper.convertEntityToVo(repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!")));
 		vo.add(linkTo(methodOn(BookController.class).findById(id)).withSelfRel());
 		return vo;
 		
@@ -48,14 +50,14 @@ public class BookServices {
 	
 	public BookVO update(BookVO bookVO) {
 		
-		var book = repository.findById(bookVO.getId()).get();
+		if(bookVO == null) throw new RequiredObjectIsNullException();
+		
+		var book = repository.findById(bookVO.getId()).orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
 		try {
-			BeanUtils.copyProperties(bookVO, book);
+			BeanUtils.copyProperties(book, bookVO);
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -72,7 +74,8 @@ public class BookServices {
 	
 	
 	public void delete(Long id) {
-		repository.deleteById(id);
+		var entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
+		repository.delete(entity);
 		 
 	}
 	

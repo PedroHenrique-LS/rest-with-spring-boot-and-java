@@ -18,21 +18,17 @@ public class ExceptionResponse implements Serializable {
 		this.details = details;
 	}
 
-	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
+	public Date getTimestamp() {
+		return timestamp;
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setDetails(String details) {
-		this.details = details;
+	public String getDetails() {
+		return details;
 	}
-	
-	
-	
-	
 	
 
 }
