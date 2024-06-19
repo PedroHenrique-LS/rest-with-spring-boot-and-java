@@ -6,11 +6,15 @@ import java.util.Objects;
 
 import org.springframework.hateoas.RepresentationModel;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class BookVO extends RepresentationModel<BookVO> implements Serializable  {
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
 	private String author;
+	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy'T'HH:mm:ss'Z'", timezone = "GMT")
 	private Instant launchDate;
 	private Double price;
 	private String title;
