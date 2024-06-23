@@ -11,7 +11,7 @@ import io.swagger.v3.oas.models.info.License;
 public class OpenApiConfig {
 	
 	@Bean
-	public OpenAPI custonOpemAPI() {
+	OpenAPI custonOpemAPI() {
 		return new OpenAPI()
 				.info(new Info()
 						.title("RESTfull API with Java 18 and Spring Boot 3")
